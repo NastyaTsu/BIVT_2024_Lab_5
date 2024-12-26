@@ -191,35 +191,27 @@ public class Program
     {
         // code here
         if (B.GetLength(0) != B.GetLength(1) || B.GetLength(1) != 5 || C.GetLength(0) != C.GetLength(1) || C.GetLength(0) != 6) return;
-        int[,] ansb = new int[B.GetLength(0) - 1, B.GetLength(1)];
-        int[,] ansc = new int[C.GetLength(0) - 1, C.GetLength(1)];
-        int rowb = FindDiagonalMaxInde(B);
-        int rowc = FindDiagonalMaxInde(C);
-        for (int i = 0; i < B.GetLength(0) - 1; i++)
-        {
-            for (int j = 0; j < B.GetLength(1); j++)
-            {
-                if (i < rowb)
-                    ansb[i, j] = B[i, j];
-                else
-                    ansb[i, j] = B[i + 1, j];
-            }
-        }
-        for (int i = 0; i < C.GetLength(0) - 1; i++)
-        {
-            for (int j = 0; j < C.GetLength(1); j++)
-            {
-                if (i < rowc)
-                    ansc[i, j] = C[i, j];
-                else
-                    ansc[i, j] = C[i + 1, j];
-            }
-        }
-        B = ansb;
-        C = ansc;
+        B = Change(B);
+        C = Change(C);
         //  create and use method FindDiagonalMaxIndex(matrix);
 
         // end
+    }
+    int[,] Change(int[,] matrix)
+    {
+        int[,] ans = new int[matrix.GetLength(0) - 1, matrix.GetLength(1)];
+        int row = FindDiagonalMaxInde(matrix);
+        for (int i = 0; i < matrix.GetLength(0) - 1; i++)
+        {
+            for (int j = 0; j < matrix.GetLength(1); j++)
+            {
+                if (i < row)
+                    ans[i, j] = matrix[i, j];
+                else
+                    ans[i, j] = matrix[i + 1, j];
+            }
+        }
+        return ans;
     }
     int FindDiagonalMaxInde(int[,] matrix)
     {
