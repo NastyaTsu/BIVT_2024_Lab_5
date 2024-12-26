@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
+using System.Net.NetworkInformation;
 using System.Numerics;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -292,29 +293,32 @@ public class Program
     public void Task_2_7(ref int[,] B, int[,] C)
     {
         // code here
-        int maxi = -1, maxj = -1;
-        int ii = -1, jj = -1;
+        int maxi, maxj;
 
-        for (int i = 0; i < B.GetLength(0); i++)
+        maxi = maxelement(B);
+        maxj = maxelement(C);
+
+        B = answer(B, C, maxi, maxj);
+        // create and use CountRowPositive(matrix, rowIndex);
+        // create and use CountColumnPositive(matrix, colIndex);
+
+        // end
+    }
+    int CountRowPositive(int[,] matrix, int rowIndex)
+    {
+        int count = 0;
+        for (int j = 0; j < matrix.GetLength(1); j++)
         {
-            if (ii < CountRowPositive(B, i))
+            if (matrix[rowIndex, j] > 0)
             {
-                ii = CountRowPositive(B, i);
-                maxi = i;
+                count++;
             }
         }
-
-        for (int j = 0; j < C.GetLength(1); j++)
-        {
-            if (jj < CountColumnPositive(C, j))
-            {
-                jj = CountColumnPositive(C, j);
-                maxj = j;
-            }
-        }
-
+        return count;
+    }
+    int[,] answer(int[,] B, int[,] C, int maxi, int maxj)
+    {
         int[,] result = new int[C.GetLength(0), B.GetLength(1)];
-
         for (int i = 0; i < C.GetLength(0); i++)
         {
             for (int j = 0; j < B.GetLength(1); j++)
@@ -334,23 +338,20 @@ public class Program
             }
         }
 
-        B = result;
-        // create and use CountRowPositive(matrix, rowIndex);
-        // create and use CountColumnPositive(matrix, colIndex);
-
-        // end
+        return result;
     }
-    int CountRowPositive(int[,] matrix, int rowIndex)
+    int maxelement(int[,] matrix)
     {
-        int count = 0;
-        for (int j = 0; j < matrix.GetLength(1); j++)
+        int ii = -1, max = -1;
+        for (int i = 0; i < matrix.GetLength(0); i++)
         {
-            if (matrix[rowIndex, j] > 0)
+            if (ii < CountRowPositive(matrix, i))
             {
-                count++;
+                ii = CountRowPositive(matrix, i);
+                max = i;
             }
         }
-        return count;
+        return max;
     }
 
     int CountColumnPositive(int[,] matrix, int columnIndex)
@@ -865,38 +866,9 @@ public class Program
     public void Task_2_27(int[,] A, int[,] B)
     {
         // code here
-        int row = A.GetLength(0);
+        RemoveReplace(ref A);
+        RemoveReplace(ref B);
 
-        for (int i = 0; i < row; i++)
-        {
-            int columnIndex;
-            FindRowMaxIndex(A, i, out columnIndex); 
-
-            if ((i + 1) % 2 == 0)
-            {
-                ReplaceMaxElementEven(ref A, i, columnIndex);
-            }
-            else
-            {
-                ReplaceMaxElementOdd(ref A, i, columnIndex);
-            }
-        }
-        row = B.GetLength(0);
-
-        for (int i = 0; i < row; i++)
-        {
-            int columnIndex;
-            FindRowMaxIndex(B, i, out columnIndex);
-
-            if ((i + 1) % 2 == 0) 
-            {
-                ReplaceMaxElementEven( ref B, i, columnIndex);
-            }
-            else 
-            {
-                ReplaceMaxElementOdd(ref B, i, columnIndex);
-            }
-        }
         // create and use FindRowMaxIndex(matrix, rowIndex, out columnIndex);
         // create and use ReplaceMaxElementOdd(matrix, row, column);
         // create and use ReplaceMaxElementEven(matrix, row, column);
@@ -922,10 +894,30 @@ public class Program
     {
         matrix[row, column] *= column + 1;
     }
-
+    
     public void ReplaceMaxElementEven(ref int[,] matrix, int row, int column)
     {
         matrix[row, column] = 0;
+    }
+
+    public void RemoveReplace(ref int[,] matrix)
+    {
+        int row = matrix.GetLength(0);
+
+        for (int i = 0; i < row; i++)
+        {
+            int columnIndex;
+            FindRowMaxIndex(matrix, i, out columnIndex);
+
+            if ((i + 1) % 2 == 0)
+            {
+                ReplaceMaxElementEven(ref matrix, i, columnIndex);
+            }
+            else
+            {
+                ReplaceMaxElementOdd(ref matrix, i, columnIndex);
+            }
+        }
     }
 
     public void Task_2_28a(int[] first, int[] second, ref int answerFirst, ref int answerSecond)
